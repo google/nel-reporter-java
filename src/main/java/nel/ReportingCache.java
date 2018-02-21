@@ -16,6 +16,8 @@
 package nel;
 
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
 import org.joda.time.Instant;
 
 /**
@@ -26,11 +28,33 @@ public class ReportingCache {
   /** Creates a new, empty cache. */
   public ReportingCache() {
     this.clients = new HashMap<Origin, Client>();
+    this.queuedReports = new HashSet<QueuedReport>();
   }
 
   /** Adds a new client to the cache, replacing any existing client for the same origin. */
   public void addClient(Client client) {
     clients.put(client.getOrigin(), client);
+  }
+
+  /** Returns the number of queued reports. */
+  public int getQueuedReportCount() {
+    return queuedReports.size();
+  }
+
+  /** Adds a new report to the cache. */
+  public void enqueueReport(Report report) {
+    queuedReports.add(new QueuedReport(report, "nel"));
+  }
+
+  /** Removes all queued reports older than <code>cutoff</code>. */
+  public void removeOldReports(Instant cutoff) {
+    Iterator<QueuedReport> iter = queuedReports.iterator();
+    while (iter.hasNext()) {
+      QueuedReport queuedReport = iter.next();
+      if (queuedReport.getReport().getTimestamp().isBefore(cutoff)) {
+        iter.remove();
+      }
+    }
   }
 
   /**
@@ -77,4 +101,5 @@ public class ReportingCache {
   }
 
   private HashMap<Origin, Client> clients;
+  private HashSet<QueuedReport> queuedReports;
 }

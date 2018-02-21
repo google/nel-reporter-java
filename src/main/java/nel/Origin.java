@@ -15,6 +15,7 @@
 
 package nel;
 
+import java.net.URI;
 import java.util.Objects;
 
 /**
@@ -40,6 +41,11 @@ public class Origin {
     this.scheme = scheme;
     this.host = host;
     this.port = port;
+  }
+
+  /** Creates a new origin for the given {@link URI}. */
+  public Origin(URI uri) {
+    this(uri.getScheme(), uri.getHost(), uri.getPort());
   }
 
   /**
