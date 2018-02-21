@@ -23,10 +23,25 @@ import org.joda.time.Instant;
  */
 public class Endpoint {
   /** Creates a new endpoint that will upload reports to the given <code>url</code>. */
-  public Endpoint(URL url) {
+  public Endpoint(URL url, int priority, int weight) {
     this.url = url;
+    this.priority = priority;
+    this.weight = weight;
     this.failures = 0;
     this.retryAfter = null;
+  }
+
+  /** Creates a new endpoint that will upload reports to the given <code>url</code>. */
+  public Endpoint(URL url) {
+    this(url, 1, 1);
+  }
+
+  public int getPriority() {
+    return priority;
+  }
+
+  public int getWeight() {
+    return weight;
   }
 
   /**
@@ -61,6 +76,8 @@ public class Endpoint {
   }
 
   private URL url;
+  private int priority;
+  private int weight;
   private int failures;
   private Instant retryAfter;
 }

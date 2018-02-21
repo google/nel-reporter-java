@@ -17,6 +17,7 @@ package nel;
 
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Random;
 import org.joda.time.Duration;
 import org.joda.time.Instant;
 
@@ -47,6 +48,42 @@ public class EndpointGroup {
     return subdomains;
   }
 
+  /**
+   * Returns the minimum <code>priority</code> value of all of the non-pending endpoints in this
+   * group.  Returns {@link Integer.MAX_VALUE} if all endpoints in the group are pending.
+   */
+  public int getMinimumPriority(Instant now) {
+    int minPriority = Integer.MAX_VALUE;
+    for (Endpoint endpoint : endpoints) {
+      if (endpoint.isPending(now)) {
+        continue;
+      }
+      int thisPriority = endpoint.getPriority();
+      if (thisPriority < minPriority) {
+        minPriority = thisPriority;
+      }
+    }
+    return minPriority;
+  }
+
+  /**
+   * Returns the total <code>weight</code> of all of the non-pending endpoints with the given
+   * <code>priority</code>.
+   */
+  public int getTotalWeightForPriority(Instant now, int priority) {
+    int totalWeight = 0;
+    for (Endpoint endpoint : endpoints) {
+      if (endpoint.isPending(now)) {
+        continue;
+      }
+      if (endpoint.getPriority() != priority) {
+        continue;
+      }
+      totalWeight += endpoint.getWeight();
+    }
+    return totalWeight;
+  }
+
   /** Adds a new endpoint to this group. */
   public void addEndpoint(Endpoint endpoint) {
     endpoints.add(endpoint);
@@ -66,13 +103,35 @@ public class EndpointGroup {
     if (isExpired(now)) {
       return null;
     }
+
+    int minPriority = getMinimumPriority(now);
+    if (minPriority == Integer.MAX_VALUE) {
+      return null;
+    }
+
+    int totalWeight = getTotalWeightForPriority(now, minPriority);
+    if (totalWeight == 0) {
+      return null;
+    }
+
+    int selectedWeight = RANDOM.nextInt(totalWeight);
     for (Endpoint endpoint : endpoints) {
-      if (!endpoint.isPending(now)) {
+      if (endpoint.isPending(now)) {
+        continue;
+      }
+      if (endpoint.getPriority() != minPriority) {
+        continue;
+      }
+      int thisWeight = endpoint.getWeight();
+      if (selectedWeight < thisWeight) {
         return endpoint;
       }
+      selectedWeight -= thisWeight;
     }
     return null;
   }
+
+  private static Random RANDOM = new Random();
 
   private String name;
   private ArrayList<Endpoint> endpoints;
