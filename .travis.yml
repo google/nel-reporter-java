@@ -4,6 +4,12 @@ jdk:
   - oraclejdk9
   - openjdk7
 
+script:
+  # Compile and run unit tests
+  - mvn test -B
+  # Validate code style
+  - mvn validate -B
+
 # In addition to pull requests, always build these branches
 branches:
   only:
