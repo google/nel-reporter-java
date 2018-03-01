@@ -19,6 +19,7 @@ import static org.junit.Assert.assertEquals;
 
 import java.net.MalformedURLException;
 import java.net.URL;
+
 import org.joda.time.Duration;
 import org.joda.time.Instant;
 import org.junit.Test;
@@ -29,14 +30,14 @@ public class ReportingCacheTest {
     final Instant I_1300 = Instant.parse("2018-02-20T13:00:00.000Z");
     ReportingCache cache = new ReportingCache();
     cache.enqueueReport(new Report()
-      .setTimestamp(I_1300)
-      .setUri("https://example.com")
-      .setSamplingFraction(0.5)
-      .setServerIp("192.0.2.24")
-      .setProtocol("h2")
-      .setStatusCode(200)
-      .setElapsedTime(Duration.millis(1000))
-      .setType(Type.OK));
+        .setTimestamp(I_1300)
+        .setUri("https://example.com")
+        .setSamplingFraction(0.5)
+        .setServerIp("192.0.2.24")
+        .setProtocol("h2")
+        .setStatusCode(200)
+        .setElapsedTime(Duration.millis(1000))
+        .setType(Type.OK));
     assertEquals(1, cache.getQueuedReportCount());
   }
 
@@ -48,24 +49,24 @@ public class ReportingCacheTest {
     ReportingCache cache = new ReportingCache();
     // This report will be removed
     cache.enqueueReport(new Report()
-      .setTimestamp(I_1300)
-      .setUri("https://example.com")
-      .setSamplingFraction(0.5)
-      .setServerIp("192.0.2.24")
-      .setProtocol("h2")
-      .setStatusCode(200)
-      .setElapsedTime(Duration.millis(1000))
-      .setType(Type.OK));
+        .setTimestamp(I_1300)
+        .setUri("https://example.com")
+        .setSamplingFraction(0.5)
+        .setServerIp("192.0.2.24")
+        .setProtocol("h2")
+        .setStatusCode(200)
+        .setElapsedTime(Duration.millis(1000))
+        .setType(Type.OK));
     // And this one won't
     cache.enqueueReport(new Report()
-      .setTimestamp(I_1400)
-      .setUri("https://example.com")
-      .setSamplingFraction(0.5)
-      .setServerIp("192.0.2.24")
-      .setProtocol("h2")
-      .setStatusCode(200)
-      .setElapsedTime(Duration.millis(1000))
-      .setType(Type.OK));
+        .setTimestamp(I_1400)
+        .setUri("https://example.com")
+        .setSamplingFraction(0.5)
+        .setServerIp("192.0.2.24")
+        .setProtocol("h2")
+        .setStatusCode(200)
+        .setElapsedTime(Duration.millis(1000))
+        .setType(Type.OK));
     cache.removeOldReports(I_1330);
     assertEquals(1, cache.getQueuedReportCount());
   }
@@ -74,9 +75,9 @@ public class ReportingCacheTest {
   public void canChooseEndpoint() throws MalformedURLException {
     final Instant I_1300 = Instant.parse("2018-02-20T13:00:00.000Z");
     final Instant I_1301 = Instant.parse("2018-02-20T13:01:00.000Z");
+    final Origin origin = new Origin("https", "example.com", 443);
+    final Client client = new Client(origin);
     ReportingCache cache = new ReportingCache();
-    Origin origin = new Origin("https", "example.com", 443);
-    Client client = new Client(origin);
     EndpointGroup group = new EndpointGroup("nel", false, Duration.standardHours(1), I_1300);
     Endpoint endpoint = new Endpoint(new URL("https://example.com/upload"));
     group.addEndpoint(endpoint);
@@ -90,9 +91,9 @@ public class ReportingCacheTest {
   public void canChooseSuperdomainEndpoint() throws MalformedURLException {
     final Instant I_1300 = Instant.parse("2018-02-20T13:00:00.000Z");
     final Instant I_1301 = Instant.parse("2018-02-20T13:01:00.000Z");
+    final Origin origin = new Origin("https", "foo.example.com", 443);
+    final Origin superdomainOrigin = new Origin("https", "example.com", 443);
     ReportingCache cache = new ReportingCache();
-    Origin origin = new Origin("https", "foo.example.com", 443);
-    Origin superdomainOrigin = new Origin("https", "example.com", 443);
     Client client = new Client(superdomainOrigin);
     EndpointGroup group = new EndpointGroup("nel", true, Duration.standardHours(1), I_1300);
     Endpoint endpoint = new Endpoint(new URL("https://example.com/upload"));
@@ -107,9 +108,9 @@ public class ReportingCacheTest {
   public void chooseEndpointObeysIncludeSubdomains() throws MalformedURLException {
     final Instant I_1300 = Instant.parse("2018-02-20T13:00:00.000Z");
     final Instant I_1301 = Instant.parse("2018-02-20T13:01:00.000Z");
+    final Origin origin = new Origin("https", "foo.example.com", 443);
+    final Origin superdomainOrigin = new Origin("https", "example.com", 443);
     ReportingCache cache = new ReportingCache();
-    Origin origin = new Origin("https", "foo.example.com", 443);
-    Origin superdomainOrigin = new Origin("https", "example.com", 443);
     Client client = new Client(superdomainOrigin);
     EndpointGroup group = new EndpointGroup("nel", false, Duration.standardHours(1), I_1300);
     Endpoint endpoint = new Endpoint(new URL("https://example.com/upload"));

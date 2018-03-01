@@ -15,11 +15,12 @@
 
 package nel;
 
-import com.google.gson.GsonBuilder;
 import java.net.InetAddress;
-import java.net.UnknownHostException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.net.UnknownHostException;
+
+import com.google.gson.GsonBuilder;
 import org.joda.time.Duration;
 import org.joda.time.Instant;
 

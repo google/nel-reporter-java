@@ -20,6 +20,10 @@ package nel;
  * of some logistics about the report, such as how many times we've tried to upload it.
  */
 public class QueuedReport {
+  /**
+   * Creates a new queued report that will be uploaded to an endpoint in the given
+   * <code>group</code>.
+   */
   public QueuedReport(Report report, String group) {
     this.report = report;
     this.origin = new Origin(report.getUri());

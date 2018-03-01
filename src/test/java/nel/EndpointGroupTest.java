@@ -21,6 +21,7 @@ import static org.junit.Assert.assertTrue;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.HashMap;
+
 import org.joda.time.Duration;
 import org.joda.time.Instant;
 import org.junit.Test;
@@ -183,8 +184,8 @@ public class EndpointGroupTest {
     group.addEndpoint(endpoint2);
     // Pick an endpoint many many times to exercise the randomness.
     HashMap<Endpoint, Integer> counts = new HashMap<Endpoint, Integer>();
-    final int ITERATIONS = 1000;
-    for (int i = 0; i < ITERATIONS; i++) {
+    final int iterations = 1000;
+    for (int i = 0; i < iterations; i++) {
       Endpoint result = group.chooseEndpoint(I_1301);
       Integer count = counts.get(result);
       if (count == null) {
