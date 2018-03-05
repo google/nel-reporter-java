@@ -29,8 +29,10 @@ import java.util.Objects;
  * each other to varying degrees.
  * </blockquote>
  *
+ * <p>
  * This class in particular represents a <em>tuple origin</em> — the combination of scheme, host,
  * and port from the original request.
+ * </p>
  */
 public class Origin {
   /**
@@ -43,7 +45,9 @@ public class Origin {
     this.port = port;
   }
 
-  /** Creates a new origin for the given {@link URI}. */
+  /**
+   * Creates a new origin for the given {@link URI}.
+   */
   public Origin(URI uri) {
     this(uri.getScheme(), uri.getHost(), uri.getPort());
   }
@@ -73,10 +77,12 @@ public class Origin {
     return port;
   }
 
+  @Override
   public String toString() {
     return scheme + "://" + host + ":" + Integer.toString(port);
   }
 
+  @Override
   public boolean equals(Object obj) {
     if (!(obj instanceof Origin)) {
       return false;
@@ -86,6 +92,7 @@ public class Origin {
       && this.port == other.port;
   }
 
+  @Override
   public int hashCode() {
     return Objects.hash(scheme, host, port);
   }

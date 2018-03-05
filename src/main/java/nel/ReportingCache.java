@@ -18,6 +18,7 @@ package nel;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+
 import org.joda.time.Instant;
 
 /**
@@ -61,10 +62,14 @@ public class ReportingCache {
    * Chooses an endpoint for an origin, taking into account any <code>include-subdomains</code>,
    * <code>priority</code>, and <code>weight</code> properties of the endpoints.
    *
+   * <p>
    * Returns <code>null</code> if we cannot find any appropriate endpoint for the origin.
+   * </p>
    *
+   * <p>
    * This implements step 3 of the <a href="https://wicg.github.io/reporting/#send-reports">"Send
    * reports"</a> algorithm in the Reporting spec.
+   * </p>
    */
   public Endpoint chooseEndpoint(Instant now, Origin origin, String groupName) {
     // First check for an exact origin match (where we can ignore the include-subdomains field).

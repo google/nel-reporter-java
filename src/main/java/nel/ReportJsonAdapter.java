@@ -15,10 +15,11 @@
 
 package nel;
 
+import java.io.IOException;
+
 import com.google.gson.TypeAdapter;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
-import java.io.IOException;
 import org.joda.time.Duration;
 import org.joda.time.Instant;
 
@@ -27,11 +28,13 @@ import org.joda.time.Instant;
  * href="https://wicg.github.io/reporting/">Reporting</a> and <a
  * href="https://wicg.github.io/network-error-logging/">NEL</a> specs.
  *
+ * <p>
  * Note that {@link Report}s include a timestamp (when the report was generated), while the specs
  * define an <code>age</code> field (the difference in time between when the report was generated
  * and when it was uploaded).  When constructing a new adapter, you must pass in the current time
  * (or whatever time you wish to use as the "upload time"), which we will use to calculate the
  * <code>age</code> fields.
+ * </p>
  */
 public class ReportJsonAdapter extends TypeAdapter<Report> {
   /**
@@ -42,10 +45,12 @@ public class ReportJsonAdapter extends TypeAdapter<Report> {
     this.now = now;
   }
 
+  @Override
   public Report read(JsonReader reader) throws IOException {
     throw new IllegalStateException("Cannot parse Reports from JSON");
   }
 
+  @Override
   public void write(JsonWriter writer, Report report) throws IOException {
     writer.beginObject();
     if (report.getTimestamp() != null) {

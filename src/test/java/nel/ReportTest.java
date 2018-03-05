@@ -18,6 +18,7 @@ package nel;
 import static org.junit.Assert.assertEquals;
 
 import java.net.URISyntaxException;
+
 import org.joda.time.Duration;
 import org.joda.time.Instant;
 import org.junit.Test;
@@ -26,15 +27,16 @@ public class ReportTest {
   @Test
   public void canBuildReports() {
     Report report = new Report()
-      .setTimestamp(Instant.parse("2018-02-20T13:00:00.000Z"))
-      .setUri("https://example.com")
-      .setSamplingFraction(0.5)
-      .setServerIp("192.0.2.24")
-      .setProtocol("h2")
-      .setStatusCode(200)
-      .setElapsedTime(Duration.millis(1000))
-      .setType(Type.OK);
+        .setTimestamp(Instant.parse("2018-02-20T13:00:00.000Z"))
+        .setUri("https://example.com")
+        .setSamplingFraction(0.5)
+        .setServerIp("192.0.2.24")
+        .setProtocol("h2")
+        .setStatusCode(200)
+        .setElapsedTime(Duration.millis(1000))
+        .setType(Type.OK);
     assertEquals(
+        // CHECKSTYLE.OFF: OperatorWrap
         "{\n" +
         "  \"age\": 200,\n" +
         "  \"type\": \"network-error\",\n" +
@@ -49,21 +51,23 @@ public class ReportTest {
         "    \"type\": \"ok\"\n" +
         "  }\n" +
         "}",
+        // CHECKSTYLE.ON: OperatorWrap
         report.toString(Instant.parse("2018-02-20T13:00:00.200Z")));
   }
 
   @Test
   public void removesUriFragments() {
     Report report = new Report()
-      .setTimestamp(Instant.parse("2018-02-20T13:00:00.000Z"))
-      .setUri("https://example.com#fragment")
-      .setSamplingFraction(0.5)
-      .setServerIp("192.0.2.24")
-      .setProtocol("h2")
-      .setStatusCode(200)
-      .setElapsedTime(Duration.millis(1000))
-      .setType(Type.OK);
+        .setTimestamp(Instant.parse("2018-02-20T13:00:00.000Z"))
+        .setUri("https://example.com#fragment")
+        .setSamplingFraction(0.5)
+        .setServerIp("192.0.2.24")
+        .setProtocol("h2")
+        .setStatusCode(200)
+        .setElapsedTime(Duration.millis(1000))
+        .setType(Type.OK);
     assertEquals(
+        // CHECKSTYLE.OFF: OperatorWrap
         "{\n" +
         "  \"age\": 200,\n" +
         "  \"type\": \"network-error\",\n" +
@@ -78,6 +82,7 @@ public class ReportTest {
         "    \"type\": \"ok\"\n" +
         "  }\n" +
         "}",
+        // CHECKSTYLE.ON: OperatorWrap
         report.toString(Instant.parse("2018-02-20T13:00:00.200Z")));
   }
 }
