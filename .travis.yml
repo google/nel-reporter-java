@@ -1,0 +1,10 @@
+language: java
+jdk:
+  - oraclejdk8
+  - oraclejdk9
+  - openjdk7
+
+# In addition to pull requests, always build these branches
+branches:
+  only:
+    - master
