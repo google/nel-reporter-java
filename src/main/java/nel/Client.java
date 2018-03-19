@@ -16,6 +16,12 @@
 package nel;
 
 import java.util.HashMap;
+import java.util.List;
+
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonSyntaxException;
+import org.joda.time.Instant;
 
 /**
  * A particular {@link Origin}'s relationship to a set of {@link Endpoint}s.
@@ -25,6 +31,25 @@ public class Client {
   public Client(Origin origin) {
     this.origin = origin;
     this.groups = new HashMap<String, EndpointGroup>();
+  }
+
+  /**
+   * Parses a client from the contents of a <code>Report-To</code> header.
+   */
+  public static Client parseFromReportToHeader(List<String> headers, Origin origin, Instant now)
+      throws InvalidHeaderException {
+    GsonBuilder builder = new GsonBuilder();
+    builder.registerTypeAdapter(EndpointGroup.class, new EndpointGroupJsonAdapter(now));
+    Gson gson = builder.create();
+    Client client = new Client(origin);
+    for (String header : headers) {
+      try {
+        client.addGroup(gson.fromJson(header, EndpointGroup.class));
+      } catch (JsonSyntaxException e) {
+        throw new InvalidHeaderException("Invalid \"Report-To\" header", e);
+      }
+    }
+    return client;
   }
 
   public Origin getOrigin() {
@@ -41,6 +66,21 @@ public class Client {
    */
   public EndpointGroup getGroup(String name) {
     return groups.get(name);
+  }
+
+  @Override
+  public String toString() {
+    return "Client(origin=" + origin + ", groups=" + groups + ")";
+  }
+
+  @Override
+  public boolean equals(Object obj) {
+    if (!(obj instanceof Client)) {
+      return false;
+    }
+    Client other = (Client) obj;
+    return this.origin.equals(other.origin)
+      && this.groups.equals(other.groups);
   }
 
   private Origin origin;
