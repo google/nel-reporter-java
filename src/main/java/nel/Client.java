@@ -35,6 +35,11 @@ public class Client {
 
   /**
    * Parses a client from the contents of a <code>Report-To</code> header.
+   *
+   * @param headers A list of all values for the <code>Report-To</code> header from the response.
+   * @param origin The origin of the response.
+   * @param now The current timestamp.  Will be used to calculate expiry times for any endpoint
+   *     groups in the new client.
    */
   public static Client parseFromReportToHeader(List<String> headers, Origin origin, Instant now)
       throws InvalidHeaderException {
