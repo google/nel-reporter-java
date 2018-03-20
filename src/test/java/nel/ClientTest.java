@@ -58,7 +58,9 @@ public class ClientTest {
     final Origin origin = new Origin("https", "example.com", 443);
     ArrayList<String> headers = new ArrayList<String>();
     headers.add(header);
-    Client actual = Client.parseFromReportToHeader(headers, origin, I_1300);
+    // If `header` is invalid (either malformed JSON, or incorrect contents as defined by the
+    // Reporting spec), this method should throw an InvalidHeaderException.
+    Client.parseFromReportToHeader(headers, origin, I_1300);
   }
 
   @Test(expected = InvalidHeaderException.class)
