@@ -17,6 +17,7 @@ package nel;
 
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
 import org.joda.time.Duration;
@@ -90,6 +91,11 @@ public class EndpointGroup {
     endpoints.add(endpoint);
   }
 
+  /** Adds several new endpoints to this group. */
+  public void addEndpoints(List<Endpoint> endpoints) {
+    this.endpoints.addAll(endpoints);
+  }
+
   /** Returns whether this endpoint is expired as of <code>now</code>. */
   public boolean isExpired(Instant now) {
     return now.isAfter(expiry);
@@ -130,6 +136,25 @@ public class EndpointGroup {
       selectedWeight -= thisWeight;
     }
     return null;
+  }
+
+  @Override
+  public String toString() {
+    return "EndpointGroup(name=" + name + ", include-subdomains=" + Boolean.toString(subdomains)
+      + ", ttl=" + ttl + ", endpoints=[" + endpoints.toString() + "])";
+  }
+
+  @Override
+  public boolean equals(Object obj) {
+    if (!(obj instanceof EndpointGroup)) {
+      return false;
+    }
+    EndpointGroup other = (EndpointGroup) obj;
+    return this.name.equals(other.name)
+      && this.endpoints.equals(other.endpoints)
+      && this.subdomains == other.subdomains
+      && this.ttl.equals(other.ttl)
+      && this.creation.equals(other.creation);
   }
 
   private static Random RANDOM = new Random();

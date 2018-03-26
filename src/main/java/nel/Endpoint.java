@@ -72,8 +72,21 @@ public class Endpoint {
     this.retryAfter = retryAfter;
   }
 
+  @Override
   public String toString() {
-    return "<" + url.toString() + ">";
+    return "<" + url.toString() + ", priority=" + Integer.toString(priority)
+      + ", weight=" + Integer.toString(weight) + ">";
+  }
+
+  @Override
+  public boolean equals(Object obj) {
+    if (!(obj instanceof Endpoint)) {
+      return false;
+    }
+    Endpoint other = (Endpoint) obj;
+    return this.url.equals(other.url)
+      && this.priority == other.priority
+      && this.weight == other.weight;
   }
 
   private URL url;
