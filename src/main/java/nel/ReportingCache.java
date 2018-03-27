@@ -15,7 +15,6 @@
 
 package nel;
 
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 
@@ -28,7 +27,7 @@ import org.joda.time.Instant;
 public class ReportingCache {
   /** Creates a new, empty cache. */
   public ReportingCache() {
-    this.clients = new HashMap<Origin, Client>();
+    this.clients = new OriginMap<Client>();
     this.queuedReports = new HashSet<QueuedReport>();
   }
 
@@ -72,32 +71,21 @@ public class ReportingCache {
    * </p>
    */
   public Endpoint chooseEndpoint(Instant now, Origin origin, String groupName) {
-    // First check for an exact origin match (where we can ignore the include-subdomains field).
-    Client client = clients.get(origin);
-    if (client != null) {
+    // Loop through all of the clients registered for origin, or any of its superdomains.
+    for (Client client : clients.getAll(origin)) {
       EndpointGroup group = client.getGroup(groupName);
-      if (group != null) {
-        Endpoint endpoint = group.chooseEndpoint(now);
-        if (endpoint != null) {
-          return endpoint;
-        }
-      }
-    }
-
-    // Then check each superdomain origin for a group whose include-subdomains field is true.
-    for (origin = origin.getSuperdomainOrigin(); origin != null;
-         origin = origin.getSuperdomainOrigin()) {
-      client = clients.get(origin);
-      if (client == null) {
+      if (group == null) {
+        // This client has no group with the requested name.
         continue;
       }
-
-      EndpointGroup group = client.getGroup(groupName);
-      if (group != null && group.includeSubdomains()) {
-        Endpoint endpoint = group.chooseEndpoint(now);
-        if (endpoint != null) {
-          return endpoint;
-        }
+      if (client.getOrigin() != origin && !group.includeSubdomains()) {
+        // This client is for a superdomain of origin, and its group does not have
+        // include-subdomains set to true; that means we can't use it for the subdomain.
+        continue;
+      }
+      Endpoint endpoint = group.chooseEndpoint(now);
+      if (endpoint != null) {
+        return endpoint;
       }
     }
 
@@ -105,6 +93,6 @@ public class ReportingCache {
     return null;
   }
 
-  private HashMap<Origin, Client> clients;
+  private OriginMap<Client> clients;
   private HashSet<QueuedReport> queuedReports;
 }
