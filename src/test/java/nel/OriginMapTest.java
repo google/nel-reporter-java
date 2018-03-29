@@ -50,6 +50,15 @@ public class OriginMapTest {
   }
 
   @Test
+  public void canGetForSubsubdomain() {
+    final Origin origin = new Origin("https", "bar.foo.example.com", 443);
+    final Origin supersuperdomainOrigin = new Origin("https", "example.com", 443);
+    OriginMap<String> map = new OriginMap<String>();
+    map.put(supersuperdomainOrigin, "test");
+    assertEquals(Arrays.asList("test"), list(map.getAll(origin)));
+  }
+
+  @Test
   public void canGetAllForSubdomain() {
     final Origin origin = new Origin("https", "foo.example.com", 443);
     final Origin superdomainOrigin = new Origin("https", "example.com", 443);
@@ -57,6 +66,18 @@ public class OriginMapTest {
     map.put(superdomainOrigin, "test");
     map.put(origin, "test2");
     assertEquals(Arrays.asList("test2", "test"), list(map.getAll(origin)));
+  }
+
+  @Test
+  public void canGetAllForSubsubdomain() {
+    final Origin origin = new Origin("https", "bar.foo.example.com", 443);
+    final Origin superdomainOrigin = new Origin("https", "foo.example.com", 443);
+    final Origin supersuperdomainOrigin = new Origin("https", "example.com", 443);
+    OriginMap<String> map = new OriginMap<String>();
+    map.put(supersuperdomainOrigin, "test1");
+    map.put(superdomainOrigin, "test2");
+    map.put(origin, "test3");
+    assertEquals(Arrays.asList("test3", "test2", "test1"), list(map.getAll(origin)));
   }
 
 }
