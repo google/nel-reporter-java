@@ -83,6 +83,11 @@ public class OriginMap<V> extends HashMap<Origin, V> {
       return result;
     }
 
+    @Override
+    public void remove() {
+      throw new UnsupportedOperationException("Cannot remove from OriginMap#getAll");
+    }
+
     private Origin origin;
     private V nextElement;
   }
