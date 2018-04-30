@@ -57,6 +57,10 @@ public class NelPolicy {
     }
   }
 
+  public Origin getOrigin() {
+    return origin;
+  }
+
   public boolean includeSubdomains() {
     return subdomains;
   }

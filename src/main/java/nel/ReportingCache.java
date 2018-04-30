@@ -21,8 +21,8 @@ import java.util.Iterator;
 import org.joda.time.Instant;
 
 /**
- * A cache of all of all Reporting and NEL configurations that we have received, and of reports that
- * are queued for delivery.
+ * A cache of all of all Reporting configurations that we have received, and of reports that are
+ * queued for delivery.
  */
 public class ReportingCache {
   /** Creates a new, empty cache. */
